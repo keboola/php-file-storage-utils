@@ -15,7 +15,7 @@ class ClientFactoryTest extends TestCase
     /** @var BlobRestProxy */
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->client = $this->getClient();

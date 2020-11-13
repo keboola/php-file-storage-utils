@@ -5,13 +5,19 @@ declare(strict_types=1);
 namespace Keboola\FileStorage\Abs;
 
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use Psr\Log\LoggerInterface;
 
 final class ClientFactory
 {
-    public static function createClientFromConnectionString(string $connectionString): BlobRestProxy
-    {
+    public static function createClientFromConnectionString(
+        string $connectionString,
+        ?LoggerInterface $logger = null
+    ): BlobRestProxy {
         $client = BlobRestProxy::createBlobService($connectionString);
         $client->pushMiddleware(RetryMiddlewareFactory::create());
+        if ($logger !== null) {
+            $client->pushMiddleware(new LoggerMiddleware($logger));
+        }
 
         return $client;
     }
