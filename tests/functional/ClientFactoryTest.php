@@ -10,14 +10,16 @@ use PHPUnit\Framework\TestCase;
 
 class ClientFactoryTest extends TestCase
 {
-    public function testClient(): void
+    private const CONTAINER = 'ping';
+
+    /** @var BlobRestProxy */
+    private $client;
+
+    protected function setUp()
     {
-        $client = $this->getClient();
-
-        $client->createContainer('ping');
-        $client->deleteContainer('ping');
-
-        $this->expectNotToPerformAssertions();
+        parent::setUp();
+        $this->client = $this->getClient();
+        $this->client->deleteContainer(self::CONTAINER);
     }
 
     private function getClient(): BlobRestProxy
@@ -29,5 +31,13 @@ class ClientFactoryTest extends TestCase
         );
 
         return ClientFactory::createClientFromConnectionString($connectionString);
+    }
+
+    public function testClient(): void
+    {
+        $this->client->createContainer(self::CONTAINER);
+        $this->client->deleteContainer(self::CONTAINER);
+
+        $this->expectNotToPerformAssertions();
     }
 }
