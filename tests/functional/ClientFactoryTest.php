@@ -4,33 +4,20 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Tests\Functional\Abs;
 
-use Keboola\FileStorage\Abs\ClientFactory;
-use MicrosoftAzure\Storage\Blob\BlobRestProxy;
-use PHPUnit\Framework\TestCase;
+use Keboola\FileStorage\Tests\Common\BaseFunctionalTestCase;
 
-class ClientFactoryTest extends TestCase
+class ClientFactoryTest extends BaseFunctionalTestCase
 {
     private const CONTAINER = 'ping';
-
-    /** @var BlobRestProxy */
-    private $client;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = $this->getClient();
-        $this->client->deleteContainer(self::CONTAINER);
-    }
-
-    private function getClient(): BlobRestProxy
-    {
-        $connectionString = sprintf(
-            'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s',
-            (string) getenv('ABS_ACCOUNT_NAME'),
-            (string) getenv('ABS_ACCOUNT_KEY')
-        );
-
-        return ClientFactory::createClientFromConnectionString($connectionString);
+        try {
+            $this->client->deleteContainer(self::CONTAINER);
+        } catch (\Throwable $e) {
+            // ignore
+        }
     }
 
     public function testClient(): void

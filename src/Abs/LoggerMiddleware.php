@@ -59,6 +59,7 @@ class LoggerMiddleware extends MiddlewareBase
             $this->logger->info(
                 sprintf('Request: %s', (string) $request->getUri()),
                 [
+                    'reason' => $reason,
                     'request' => $request,
                     'options' => $options,
                 ]
