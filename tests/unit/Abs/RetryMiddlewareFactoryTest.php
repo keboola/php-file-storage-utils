@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Keboola\FileStorage\Tests\Abs;
+namespace Keboola\FileStorage\Tests\Unit\Abs;
 
 use Keboola\FileStorage\Abs\RetryMiddlewareFactory;
 use PHPUnit\Framework\TestCase;

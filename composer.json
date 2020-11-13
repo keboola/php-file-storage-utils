@@ -24,7 +24,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Keboola\\FileStorage\\Tests\\": "tests/"
+            "Keboola\\FileStorage\\Tests\\Unit\\": "tests/unit",
+            "Keboola\\FileStorage\\Tests\\Functional\\": "tests/functional"
         }
     },
     "require": {
