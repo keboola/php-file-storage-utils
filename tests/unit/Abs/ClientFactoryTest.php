@@ -8,6 +8,7 @@ use Keboola\FileStorage\Abs\ClientFactory;
 use Keboola\FileStorage\Abs\LoggerMiddleware;
 use MicrosoftAzure\Storage\Common\Middlewares\RetryMiddleware;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 
 class ClientFactoryTest extends TestCase
@@ -53,40 +54,8 @@ class ClientFactoryTest extends TestCase
 
     private function getLogger(): LoggerInterface
     {
-        return new class implements LoggerInterface {
+        return new class extends AbstractLogger {
             // phpcs:disable
-            public function emergency($message, array $context = []): void
-            {
-            }
-
-            public function alert($message, array $context = []): void
-            {
-            }
-
-            public function critical($message, array $context = []): void
-            {
-            }
-
-            public function error($message, array $context = []): void
-            {
-            }
-
-            public function warning($message, array $context = []): void
-            {
-            }
-
-            public function notice($message, array $context = []): void
-            {
-            }
-
-            public function info($message, array $context = []): void
-            {
-            }
-
-            public function debug($message, array $context = []): void
-            {
-            }
-
             public function log($level, $message, array $context = []): void
             {
             }
