@@ -3,12 +3,30 @@
     "type": "library",
     "license": "MIT",
     "description": "Set of helpers and abstractions above file storage providers",
+    "keywords": [
+        "keboola",
+        "blob",
+        "storage",
+        "s3",
+        "azure",
+        "aws"
+    ],
     "authors": [
         {
-            "name": "Martin Zajic",
-            "email": "martin.zajic@keboola.com"
+            "name": "Keboola",
+            "email": "devel@keboola.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Keboola\\FileStorage\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Keboola\\FileStorage\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=7.1",
         "microsoft/azure-storage-blob": "^1.5"
