@@ -43,7 +43,7 @@
         "phpunit/phpunit": "^7"
     },
     "scripts": {
-        "tests": "phpunit --configuration ./phpunit.xml.dist",
+        "tests": "phpunit --configuration ./phpunit.xml.dist --coverage-clover build/logs/clover.xml --coverage-xml=build/logs/coverage-xml --log-junit=build/logs/phpunit.junit.xml",
         "phpcs": "phpcs -s -n --extensions=php src tests",
         "phpcbf": "phpcbf -s -n --extensions=php src tests",
         "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress",
