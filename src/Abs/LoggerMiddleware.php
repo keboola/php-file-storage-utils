@@ -20,6 +20,12 @@ class LoggerMiddleware extends MiddlewareBase
         $this->logger = $logger;
     }
 
+    protected function onRequest(RequestInterface $request): RequestInterface
+    {
+        $this->logger->debug(sprintf('Request: %s', (string) $request->getUri()));
+        return $request;
+    }
+
     /**
      * This function will be invoked after the request is sent, if
      * the promise is fulfilled.
@@ -33,7 +39,7 @@ class LoggerMiddleware extends MiddlewareBase
             $options
         ) {
             $this->logger->debug(
-                sprintf('Request: %s', (string) $request->getUri()),
+                sprintf('Request OK: %s', (string) $request->getUri()),
                 [
                     'request' => $request,
                     'response' => $response,
@@ -57,7 +63,7 @@ class LoggerMiddleware extends MiddlewareBase
             $options
         ) {
             $this->logger->info(
-                sprintf('Request: %s', (string) $request->getUri()),
+                sprintf('Request REJECT: %s', (string) $request->getUri()),
                 [
                     'reason' => $reason,
                     'request' => $request,
