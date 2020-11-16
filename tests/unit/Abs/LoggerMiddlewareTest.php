@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Abs;
 
+use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Exception\RequestException;
@@ -43,10 +44,16 @@ class LoggerMiddlewareTest extends TestCase
         $logMock->expects($this->once())->method('debug')->with(
             'Request OK: http://www.keboola.com',
             [
-                'request' => $request,
-                'response' => $response,
+                'request' => [
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'headers' => $request->getHeaders(),
+                ],
+                'response' => [
+                    'body' => (string) $request->getBody(),
+                    'headers' => $request->getHeaders(),
+                ],
                 'options' => [],
-
             ]
         );
 
@@ -57,7 +64,7 @@ class LoggerMiddlewareTest extends TestCase
         $callable($response);
     }
 
-    public function testOnRejected(): void
+    public function testOnRejectedNoResponse(): void
     {
         $request = new Request('GET', 'http://www.keboola.com');
         $reason = new RequestException('test message', $request);
@@ -67,10 +74,83 @@ class LoggerMiddlewareTest extends TestCase
         $logMock->expects($this->once())->method('info')->with(
             'Request REJECT: http://www.keboola.com',
             [
-                'request' => $request,
-                'reason' => $reason,
+                'request' => [
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'headers' => $request->getHeaders(),
+                ],
+                'reason' => [
+                    'message' => $reason->getMessage(),
+                    'response' => null,
+                    'code' => $reason->getCode(),
+                    'trace' => $reason->getTraceAsString(),
+                ],
                 'options' => [],
+            ]
+        );
 
+        $middleware = new LoggerMiddleware($logMock);
+        $onRejected = self::getMethod('onRejected', $middleware);
+        $callable = $onRejected->invokeArgs($middleware, [$request, []]);
+        $callable($reason);
+    }
+
+    public function testOnRejectedResponse(): void
+    {
+        $request = new Request('GET', 'http://www.keboola.com');
+        $response = new Response(400, [], '{}');
+        $reason = new RequestException('test message', $request, $response);
+
+        /** @var LoggerInterface|MockObject $logMock */
+        $logMock = $this->createMock(LoggerInterface::class);
+        $logMock->expects($this->once())->method('info')->with(
+            'Request REJECT: http://www.keboola.com',
+            [
+                'request' => [
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'headers' => $request->getHeaders(),
+                ],
+                'reason' => [
+                    'message' => $reason->getMessage(),
+                    'response' => [
+                        'body' => (string) $response->getBody(),
+                        'headers' => $response->getHeaders(),
+                    ],
+                    'code' => $reason->getCode(),
+                    'trace' => $reason->getTraceAsString(),
+                ],
+                'options' => [],
+            ]
+        );
+
+        $middleware = new LoggerMiddleware($logMock);
+        $onRejected = self::getMethod('onRejected', $middleware);
+        $callable = $onRejected->invokeArgs($middleware, [$request, []]);
+        $callable($reason);
+    }
+
+    public function testOnRejectedGeneralError(): void
+    {
+        $request = new Request('GET', 'http://www.keboola.com');
+        $reason = new Exception('test message', 10);
+
+        /** @var LoggerInterface|MockObject $logMock */
+        $logMock = $this->createMock(LoggerInterface::class);
+        $logMock->expects($this->once())->method('info')->with(
+            'Request REJECT: http://www.keboola.com',
+            [
+                'request' => [
+                    'method' => $request->getMethod(),
+                    'body' => (string) $request->getBody(),
+                    'headers' => $request->getHeaders(),
+                ],
+                'reason' => [
+                    'message' => 'test message',
+                    'code' => 10,
+                    'trace' => $reason->getTraceAsString(),
+                ],
+                'options' => [],
             ]
         );
 

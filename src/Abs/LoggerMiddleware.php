@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Abs;
 
+use GuzzleHttp\Exception\RequestException;
 use MicrosoftAzure\Storage\Common\Middlewares\MiddlewareBase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -41,8 +42,15 @@ class LoggerMiddleware extends MiddlewareBase
             $this->logger->debug(
                 sprintf('Request OK: %s', (string) $request->getUri()),
                 [
-                    'request' => $request,
-                    'response' => $response,
+                    'request' => [
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'headers' => $request->getHeaders(),
+                    ],
+                    'response' => [
+                        'body' => (string) $request->getBody(),
+                        'headers' => $request->getHeaders(),
+                    ],
                     'options' => $options,
                 ]
             );
@@ -62,11 +70,40 @@ class LoggerMiddleware extends MiddlewareBase
             $request,
             $options
         ) {
+            $reasonArr = [];
+            if ($reason instanceof \Throwable) {
+                $reasonArr = [
+                    'message' => $reason->getMessage(),
+                    'code' => $reason->getCode(),
+                    'trace' => $reason->getTraceAsString(),
+                ];
+            }
+
+            if ($reason instanceof RequestException) {
+                $response = null;
+                if ($reason->getResponse() !== null) {
+                    $response = [
+                        'body' => (string) $reason->getResponse()->getBody(),
+                        'headers' => $reason->getResponse()->getHeaders(),
+                    ];
+                }
+
+                $reasonArr = [
+                    'message' => $reason->getMessage(),
+                    'response' => $response,
+                    'code' => $reason->getCode(),
+                    'trace' => $reason->getTraceAsString(),
+                ];
+            }
             $this->logger->info(
                 sprintf('Request REJECT: %s', (string) $request->getUri()),
                 [
-                    'reason' => $reason,
-                    'request' => $request,
+                    'request' => [
+                        'method' => $request->getMethod(),
+                        'body' => (string) $request->getBody(),
+                        'headers' => $request->getHeaders(),
+                    ],
+                    'reason' => $reasonArr,
                     'options' => $options,
                 ]
             );
