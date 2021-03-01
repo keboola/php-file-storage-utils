@@ -16,11 +16,6 @@ class LineEndingDetectorTest extends ContainerFunctionalTestCase
      */
     public function lineEndingsProvider(): Generator
     {
-        yield 'CR' => [
-            'cr.txt',
-            StringLineEndingDetectorHelper::EOL_TRS80,
-        ];
-
         yield 'CRLF' => [
             'crlf.txt',
             StringLineEndingDetectorHelper::EOL_WINDOWS,
@@ -31,9 +26,14 @@ class LineEndingDetectorTest extends ContainerFunctionalTestCase
             StringLineEndingDetectorHelper::EOL_UNIX,
         ];
 
-        yield 'LFCR' => [
-            'lfcr.txt',
-            StringLineEndingDetectorHelper::EOL_ACORN,
+        yield 'no terminator' => [
+            'no-terminator.txt',
+            StringLineEndingDetectorHelper::EOL_UNIX,
+        ];
+
+        yield 'exotic terminator' => [
+            'unknown.txt',
+            StringLineEndingDetectorHelper::EOL_UNIX,
         ];
     }
 

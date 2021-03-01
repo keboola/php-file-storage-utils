@@ -6,7 +6,6 @@ namespace Keboola\FileStorage\Tests\Unit\LineEnding;
 
 use Generator;
 use Keboola\FileStorage\LineEnding\StringLineEndingDetectorHelper;
-use Keboola\FileStorage\LineEnding\UnknownLineEndingException;
 use PHPUnit\Framework\TestCase;
 
 class StringLineEndingDetectorHelperTest extends TestCase
@@ -16,11 +15,6 @@ class StringLineEndingDetectorHelperTest extends TestCase
      */
     public function lineEndingsProvider(): Generator
     {
-        yield 'CR' => [
-            'cr.txt',
-            StringLineEndingDetectorHelper::EOL_TRS80,
-        ];
-
         yield 'CRLF' => [
             'crlf.txt',
             StringLineEndingDetectorHelper::EOL_WINDOWS,
@@ -31,9 +25,14 @@ class StringLineEndingDetectorHelperTest extends TestCase
             StringLineEndingDetectorHelper::EOL_UNIX,
         ];
 
-        yield 'LFCR' => [
-            'lfcr.txt',
-            StringLineEndingDetectorHelper::EOL_ACORN,
+        yield 'no terminator' => [
+            'no-terminator.txt',
+            StringLineEndingDetectorHelper::EOL_UNIX,
+        ];
+
+        yield 'exotic terminator' => [
+            'unknown.txt',
+            StringLineEndingDetectorHelper::EOL_UNIX,
         ];
     }
 
@@ -46,13 +45,5 @@ class StringLineEndingDetectorHelperTest extends TestCase
         $result = StringLineEndingDetectorHelper::getLineEndingFromString($fileContent);
 
         self::assertEquals($expectedLineEnding, $result);
-    }
-
-    public function testGetLineEndingFromStringUnknownLineEnding(): void
-    {
-        $fileContent = (string) file_get_contents(__DIR__ . '/stub/unknown.txt');
-        $this->expectException(UnknownLineEndingException::class);
-        $this->expectExceptionMessage('Unknown line ending.');
-        StringLineEndingDetectorHelper::getLineEndingFromString($fileContent);
     }
 }
