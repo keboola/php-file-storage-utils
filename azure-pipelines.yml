@@ -12,18 +12,6 @@ steps:
     docker-compose pull
   displayName: 'Build Tests'
 
-- script: docker-compose run --rm tests71
-  displayName: 'Run Tests PHP 7.1'
-  env:
-    ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-    ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
-
-- script: docker-compose run --rm tests72
-  displayName: 'Run Tests PHP 7.2'
-  env:
-    ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-    ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
-
 - script: docker-compose run --rm tests73
   displayName: 'Run Tests PHP 7.3'
   env:
