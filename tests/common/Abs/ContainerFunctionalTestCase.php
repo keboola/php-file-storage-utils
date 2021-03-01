@@ -34,6 +34,11 @@ class ContainerFunctionalTestCase extends BaseFunctionalTestCase
         return $this->containerName;
     }
 
+    protected function uploadFile(string $filePath): RelativePathInterface
+    {
+        return $this->uploadString((string) file_get_contents($filePath));
+    }
+
     protected function uploadString(string $stringToUpload): RelativePathInterface
     {
         $fileName = md5(uniqid('', true));
