@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Tests\Functional\Abs;
 
-use Keboola\FileStorage\Tests\Common\BaseFunctionalTestCase;
+use Keboola\FileStorage\Tests\Common\Abs\BaseFunctionalTestCase;
+use Throwable;
 
 class ClientFactoryTest extends BaseFunctionalTestCase
 {
@@ -18,7 +19,7 @@ class ClientFactoryTest extends BaseFunctionalTestCase
         parent::setUp();
         try {
             $this->client->deleteContainer(self::getContainerName());
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // ignore
         }
     }
