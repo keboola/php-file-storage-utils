@@ -32,8 +32,12 @@ final class PartialFileDownloader
     {
         $tmpFilePath = null;
         $options = new GetBlobOptions();
+        $isCompressed = CompressionDetectorHelper::isGzipped($path->getPathnameWithoutRoot());
 
-        $options->setRange(new Range(self::BYTES_RANGE_START, $bytes));
+        if (!$isCompressed) {
+            // download only certain range if dealing with text files
+            $options->setRange(new Range(self::BYTES_RANGE_START, $bytes - 1));
+        }
 
         try {
             $result = $this->blobClient->getBlob(
@@ -53,11 +57,11 @@ final class PartialFileDownloader
             throw $e;
         }
 
-        if (CompressionDetectorHelper::isGzipped($path->getPathnameWithoutRoot())) {
+        if ($isCompressed) {
             /** @var string $tmpFilePath */
             $tmpFilePath = tempnam(sys_get_temp_dir(), 'PartialFileDownloader');
             file_put_contents($tmpFilePath, $result->getContentStream());
-            $process = Process::fromShellCommandline(sprintf('zcat %s', $tmpFilePath));
+            $process = Process::fromShellCommandline(sprintf('zcat %s | head -c %s', $tmpFilePath, $bytes));
             $process->mustRun();
             $body = $process->getOutput();
             unlink($tmpFilePath);

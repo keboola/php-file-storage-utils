@@ -22,6 +22,26 @@ class PartialFileDownloaderTest extends ContainerFunctionalTestCase
         );
     }
 
+    public function testDownloadBytesGzip(): void
+    {
+        $downloader = $this->getDownloader();
+        /** @var string $tmpFilePath */
+        $tmpFilePath = tempnam(sys_get_temp_dir(), 'testDownloadBytesGzip');
+        file_put_contents(
+            sprintf('compress.zlib://%s', $tmpFilePath),
+            bin2hex(random_bytes(200))
+        );
+
+        $file = $this->uploadFile($tmpFilePath, true);
+
+        $result = $downloader->downloadBytes($file, 100);
+
+        self::assertEquals(
+            100,
+            strlen($result)
+        );
+    }
+
     public function testDownloadBytes(): void
     {
         $downloader = $this->getDownloader();
@@ -32,7 +52,7 @@ class PartialFileDownloaderTest extends ContainerFunctionalTestCase
         $result = $downloader->downloadBytes($file);
 
         self::assertEquals(
-            (655360 + 1), // PartialFileDownloader::BYTES_RANGE_END + zero byte
+            655360,
             strlen($result)
         );
     }
@@ -47,7 +67,7 @@ class PartialFileDownloaderTest extends ContainerFunctionalTestCase
         $result = $downloader->downloadBytes($file, 100);
 
         self::assertEquals(
-            (100 + 1), // 100 + zero byte
+            100,
             strlen($result)
         );
     }
