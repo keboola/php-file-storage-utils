@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Abs\Download;
 
+use Keboola\FileStorage\Abs\Compression\CompressionDetector;
 use Keboola\FileStorage\FileNotFoundException;
-use Keboola\FileStorage\Compression\CompressionDetectorHelper;
 use Keboola\FileStorage\Path\RelativePathInterface;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\GetBlobOptions;
@@ -30,9 +30,8 @@ final class PartialFileDownloader
 
     public function downloadBytes(RelativePathInterface $path, int $bytes = self::BYTES_RANGE_END): string
     {
-        $tmpFilePath = null;
+        $isCompressed = (new CompressionDetector($this->blobClient))->isGzip($path);
         $options = new GetBlobOptions();
-        $isCompressed = CompressionDetectorHelper::isGzipped($path->getPathnameWithoutRoot());
 
         if (!$isCompressed) {
             // download only certain range if dealing with text files

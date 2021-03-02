@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Keboola\FileStorage\Tests\Functional\Abs;
+namespace Keboola\FileStorage\Tests\Functional\Abs\Download;
 
 use Keboola\FileStorage\Abs\AbsProvider;
 use Keboola\FileStorage\Abs\Download\PartialFileDownloader;
@@ -25,14 +25,7 @@ class PartialFileDownloaderTest extends ContainerFunctionalTestCase
     public function testDownloadBytesGzip(): void
     {
         $downloader = $this->getDownloader();
-        /** @var string $tmpFilePath */
-        $tmpFilePath = tempnam(sys_get_temp_dir(), 'testDownloadBytesGzip');
-        file_put_contents(
-            sprintf('compress.zlib://%s', $tmpFilePath),
-            bin2hex(random_bytes(200))
-        );
-
-        $file = $this->uploadFile($tmpFilePath, true);
+        $file = $this->uploadFile(__DIR__ . '/stub/file.400bytes.gz', true);
 
         $result = $downloader->downloadBytes($file, 100);
 

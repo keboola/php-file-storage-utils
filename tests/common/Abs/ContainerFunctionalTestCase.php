@@ -34,16 +34,21 @@ class ContainerFunctionalTestCase extends BaseFunctionalTestCase
         return $this->containerName;
     }
 
-    protected function uploadFile(string $filePath, bool $gzip = false): RelativePathInterface
+    protected function uploadFile(string $filePath, bool $gzip = false, ?string $fileName = null): RelativePathInterface
     {
-        return $this->uploadString((string) file_get_contents($filePath), $gzip);
+        return $this->uploadString((string) file_get_contents($filePath), $gzip, $fileName);
     }
 
-    protected function uploadString(string $stringToUpload, bool $gzip = false): RelativePathInterface
-    {
-        $fileName = md5(uniqid('', true));
-        if ($gzip) {
-            $fileName .= '.gz';
+    protected function uploadString(
+        string $stringToUpload,
+        bool $gzip = false,
+        ?string $fileName = null
+    ): RelativePathInterface {
+        if ($fileName === null) {
+            $fileName = md5(uniqid('', true));
+            if ($gzip) {
+                $fileName .= '.gz';
+            }
         }
         $this->client->createBlockBlob(
             $this->getContainerName(),
