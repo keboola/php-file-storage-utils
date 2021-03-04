@@ -1,47 +1,50 @@
-pool:
-  vmImage: ubuntu-latest
 pr: none
 
-steps:
-- script: docker info
-  displayName: 'Info'
+jobs:
+  - job: tests
+    timeoutInMinutes: 120
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - script: docker info
+      displayName: 'Info'
 
-- script: |
-    docker-compose down
-    docker-compose build --pull
-    docker-compose pull
-  displayName: 'Build Tests'
+    - script: |
+        docker-compose down
+        docker-compose build --pull
+        docker-compose pull
+      displayName: 'Build Tests'
 
-- script: docker-compose run --rm tests71
-  displayName: 'Run Tests PHP 7.1'
-  env:
-    ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-    ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
+    - script: docker-compose run --rm tests71
+      displayName: 'Run Tests PHP 7.1'
+      env:
+        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
+        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
 
-- script: docker-compose run --rm tests72
-  displayName: 'Run Tests PHP 7.2'
-  env:
-    ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-    ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
+    - script: docker-compose run --rm tests72
+      displayName: 'Run Tests PHP 7.2'
+      env:
+        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
+        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
 
-- script: docker-compose run --rm tests73
-  displayName: 'Run Tests PHP 7.3'
-  env:
-    ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-    ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
+    - script: docker-compose run --rm tests73
+      displayName: 'Run Tests PHP 7.3'
+      env:
+        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
+        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
 
-- script: docker-compose run --rm tests74
-  displayName: 'Run Tests PHP 7.4'
-  env:
-    ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-    ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
-    # For Codeclimate:
-    GIT_COMMIT_SHA: $(Build.SourceVersion)
-    GIT_BRANCH: $(Build.SourceBranch)
-    CC_TEST_REPORTER_ID: $(CC_TEST_REPORTER_ID)
+    - script: docker-compose run --rm tests74
+      displayName: 'Run Tests PHP 7.4'
+      env:
+        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
+        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
+        # For Codeclimate:
+        GIT_COMMIT_SHA: $(Build.SourceVersion)
+        GIT_BRANCH: $(Build.SourceBranch)
+        CC_TEST_REPORTER_ID: $(CC_TEST_REPORTER_ID)
 
-- task: PublishTestResults@2
-  displayName: 'Publish Test results'
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: 'build/logs/*.xml'
+    - task: PublishTestResults@2
+      displayName: 'Publish Test results'
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: 'build/logs/*.xml'

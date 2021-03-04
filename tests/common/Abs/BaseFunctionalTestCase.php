@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Keboola\FileStorage\Tests\Common;
+namespace Keboola\FileStorage\Tests\Common\Abs;
 
 use Keboola\FileStorage\Abs\ClientFactory;
+use Keboola\FileStorage\Tests\Common\EchoLogger;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use PHPUnit\Framework\TestCase;
 
