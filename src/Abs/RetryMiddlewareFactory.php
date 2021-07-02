@@ -141,7 +141,8 @@ class RetryMiddlewareFactory
 
             if ($exception !== null) {
                 if ($exception instanceof ClientException) {
-                    if ($exception->getResponse()->getStatusCode() === 404) {
+                    $response = $exception->getResponse();
+                    if ($response && $response->getStatusCode() === 404) {
                         return false;
                     }
                 }
