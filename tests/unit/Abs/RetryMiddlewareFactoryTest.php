@@ -52,30 +52,41 @@ class RetryMiddlewareFactoryTest extends TestCase
         $createRetryDecider = self::getMethod('createRetryDecider', new RetryMiddlewareFactory());
         $generalDecider = $createRetryDecider->invokeArgs(null, [3]);
         $request = new Request('PUT', '127.0.0.1');
-        $retryResult_1 = $generalDecider(1, $request, new Response(408));//retry
-        $retryResult_2 = $generalDecider(1, $request, new Response(501));//no-retry
-        $retryResult_3 = $generalDecider(1, $request, new Response(505));//no-retry
-        $retryResult_4 = $generalDecider(1, $request, new Response(200));//no-retry
-        $retryResult_5 = $generalDecider(1, $request, new Response(503));//retry
-        $retryResult_6 = $generalDecider(4, $request, new Response(503));//no-retry
-        $retryResult_7 = $generalDecider(1, $request, null, new ConnectException('message', $request)); //retry
-        $retryResult_8 = $generalDecider(1, $request, null, new RequestException('message', $request)); //retry
-        $retryResult_9 = $generalDecider(1, $request, null, new \Exception('message')); //retry
-        $retryResult_10 = $generalDecider(1, $request, null, new ClientException('message', $request, new Response(404))); //no-retry
-        $retryResult_11 = $generalDecider(1, $request, null, new ClientException('message', $request, new Response(500))); //retry
 
-        //assert
-        $this->assertTrue($retryResult_1);
-        $this->assertFalse($retryResult_2);
-        $this->assertFalse($retryResult_3);
-        $this->assertFalse($retryResult_4);
-        $this->assertTrue($retryResult_5);
-        $this->assertFalse($retryResult_6);
-        $this->assertTrue($retryResult_7);
-        $this->assertTrue($retryResult_8);
-        $this->assertTrue($retryResult_9);
-        $this->assertFalse($retryResult_10);
-        $this->assertTrue($retryResult_11);
+        // retry
+        $retryResult = $generalDecider(1, $request, new Response(408));
+        $this->assertTrue($retryResult);
+
+        $retryResult = $generalDecider(1, $request, new Response(503));
+        $this->assertTrue($retryResult);
+
+        $retryResult = $generalDecider(1, $request, null, new ConnectException('message', $request));
+        $this->assertTrue($retryResult);
+
+        $retryResult = $generalDecider(1, $request, null, new RequestException('message', $request));
+        $this->assertTrue($retryResult);
+
+        $retryResult = $generalDecider(1, $request, null, new \Exception('message'));
+        $this->assertTrue($retryResult);
+
+        $retryResult = $generalDecider(1, $request, null, new ClientException('message', $request, new Response(500)));
+        $this->assertTrue($retryResult);
+
+        //no-retry
+        $retryResult = $generalDecider(1, $request, new Response(501));
+        $this->assertFalse($retryResult);
+
+        $retryResult = $generalDecider(1, $request, new Response(505));
+        $this->assertFalse($retryResult);
+
+        $retryResult = $generalDecider(1, $request, new Response(200));
+        $this->assertFalse($retryResult);
+
+        $retryResult = $generalDecider(4, $request, new Response(503));
+        $this->assertFalse($retryResult);
+
+        $retryResult = $generalDecider(1, $request, null, new ClientException('message', $request, new Response(404)));
+        $this->assertFalse($retryResult);
     }
 
     private static function getMethod(string $method, RetryMiddlewareFactory $class): \ReflectionMethod
