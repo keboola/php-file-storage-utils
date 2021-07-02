@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Tests\Unit\Abs;
 
+use GuzzleHttp\Exception\ClientException;
 use Keboola\FileStorage\Abs\RetryMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Exception\ConnectException;
@@ -60,6 +61,8 @@ class RetryMiddlewareFactoryTest extends TestCase
         $retryResult_7 = $generalDecider(1, $request, null, new ConnectException('message', $request)); //retry
         $retryResult_8 = $generalDecider(1, $request, null, new RequestException('message', $request)); //retry
         $retryResult_9 = $generalDecider(1, $request, null, new \Exception('message')); //retry
+        $retryResult_10 = $generalDecider(1, $request, null, new ClientException('message', $request, new Response(404))); //no-retry
+        $retryResult_11 = $generalDecider(1, $request, null, new ClientException('message', $request, new Response(500))); //retry
 
         //assert
         $this->assertTrue($retryResult_1);
@@ -71,6 +74,8 @@ class RetryMiddlewareFactoryTest extends TestCase
         $this->assertTrue($retryResult_7);
         $this->assertTrue($retryResult_8);
         $this->assertTrue($retryResult_9);
+        $this->assertFalse($retryResult_10);
+        $this->assertTrue($retryResult_11);
     }
 
     private static function getMethod(string $method, RetryMiddlewareFactory $class): \ReflectionMethod
