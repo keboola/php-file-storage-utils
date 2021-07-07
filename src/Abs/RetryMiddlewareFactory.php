@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Abs;
 
+use GuzzleHttp\Exception\ClientException;
 use MicrosoftAzure\Storage\Common\Internal\Resources;
 use MicrosoftAzure\Storage\Common\Internal\Validate;
 use MicrosoftAzure\Storage\Common\Middlewares\RetryMiddleware;
@@ -139,6 +140,12 @@ class RetryMiddlewareFactory
             }
 
             if ($exception !== null) {
+                if ($exception instanceof ClientException) {
+                    $response = $exception->getResponse();
+                    if ($response !== null && $response->getStatusCode() === 404) {
+                        return false;
+                    }
+                }
                 return true;
             }
 
