@@ -21,6 +21,17 @@ $blobClient->pushMiddleware(Keboola\FileStorage\Abs\RetryMiddlewareFactory::crea
 ));
 ```
 
+#### Best practice
+
+use ClientFactory to preset client and middlewares
+
+```php
+\Keboola\FileStorage\Abs\ClientFactory::createClientFromConnectionString(
+        string $connectionString,
+        ?LoggerInterface $logger = null
+);
+```
+
 ## Development
 
 Run tests with:
