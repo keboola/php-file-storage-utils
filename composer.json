@@ -58,5 +58,14 @@
             "@phpstan",
             "@tests"
         ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "lock": false,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
