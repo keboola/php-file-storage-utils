@@ -4,19 +4,23 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Tests\Unit\Abs;
 
+use Exception;
 use GuzzleHttp\Exception\ClientException;
-use Keboola\FileStorage\Abs\RetryMiddlewareFactory;
-use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
+use Keboola\FileStorage\Abs\RetryMiddlewareFactory;
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionMethod;
 
 class RetryMiddlewareFactoryTest extends TestCase
 {
     public function testCreateWithNegativeNumberOfRetries(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('should be positive number');
         RetryMiddlewareFactory::create(
             -1,
@@ -27,7 +31,7 @@ class RetryMiddlewareFactoryTest extends TestCase
 
     public function testCreateWithNegativeInterval(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('should be positive number');
         RetryMiddlewareFactory::create(
             RetryMiddlewareFactory::DEFAULT_NUMBER_OF_RETRIES,
@@ -38,7 +42,7 @@ class RetryMiddlewareFactoryTest extends TestCase
 
     public function testCreateWithInvalidAccumulationMethod(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('is invalid');
         RetryMiddlewareFactory::create(
             RetryMiddlewareFactory::DEFAULT_NUMBER_OF_RETRIES,
@@ -66,7 +70,7 @@ class RetryMiddlewareFactoryTest extends TestCase
         $retryResult = $generalDecider(1, $request, null, new RequestException('message', $request));
         $this->assertTrue($retryResult);
 
-        $retryResult = $generalDecider(1, $request, null, new \Exception('message'));
+        $retryResult = $generalDecider(1, $request, null, new Exception('message'));
         $this->assertTrue($retryResult);
 
         $retryResult = $generalDecider(1, $request, null, new ClientException('message', $request, new Response(500)));
@@ -89,9 +93,9 @@ class RetryMiddlewareFactoryTest extends TestCase
         $this->assertFalse($retryResult);
     }
 
-    private static function getMethod(string $method, RetryMiddlewareFactory $class): \ReflectionMethod
+    private static function getMethod(string $method, RetryMiddlewareFactory $class): ReflectionMethod
     {
-        $class = new \ReflectionClass($class);
+        $class = new ReflectionClass($class);
         $method = $class->getMethod($method);
         $method->setAccessible(true);
         return $method;

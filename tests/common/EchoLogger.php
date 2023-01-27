@@ -4,20 +4,10 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Tests\Common;
 
-use Psr\Log\AbstractLogger;
-
-class EchoLogger extends AbstractLogger
-{
-    // phpcs:disable
-    public function log($level, $message, array $context = [])
-    {
-        // phpcs:enable
-        echo sprintf('[%s] %s', $level, $message);
-        echo PHP_EOL;
-        var_export($context);
-        echo PHP_EOL;
-
-        ob_clean();
-        ob_flush();
-    }
+// phpcs:disable
+if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+    require_once 'EchoLogger.php7';
+} else {
+    require_once 'EchoLogger.php8';
 }
+// phpcs:enable

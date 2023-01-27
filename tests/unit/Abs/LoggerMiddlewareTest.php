@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Keboola\FileStorage\Abs;
 
 use Exception;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\Request;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
+use ReflectionMethod;
 
 class LoggerMiddlewareTest extends TestCase
 {
@@ -26,9 +28,9 @@ class LoggerMiddlewareTest extends TestCase
         $onRequest->invokeArgs($middleware, [$request]);
     }
 
-    private static function getMethod(string $method, LoggerMiddleware $class): \ReflectionMethod
+    private static function getMethod(string $method, LoggerMiddleware $class): ReflectionMethod
     {
-        $class = new \ReflectionClass($class);
+        $class = new ReflectionClass($class);
         $method = $class->getMethod($method);
         $method->setAccessible(true);
         return $method;

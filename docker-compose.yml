@@ -37,17 +37,14 @@ services:
       context: .
       dockerfile: Dockerfile73
 
-
   tests74:
     <<: *tests
     build:
       context: .
       dockerfile: Dockerfile74
-#  tests74:
-#    <<: *tests
-#    build:
-#      context: .
-#      dockerfile: Dockerfile74
-#    command: ["/code/docker/tests-cc.sh"]
-#    volumes:
-#      - ./build/logs/:/code/build/logs/
+
+  tests81:
+    <<: *tests
+    build:
+      context: .
+      dockerfile: Dockerfile81

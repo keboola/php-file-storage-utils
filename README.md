@@ -1,4 +1,4 @@
-# File storage utils [![Build Status](https://dev.azure.com/keboola-dev/php-file-storage-utils/_apis/build/status/keboola.php-file-storage-utils?branchName=master)](https://dev.azure.com/keboola-dev/php-file-storage-utils/_build/latest?definitionId=12&branchName=master) [![Maintainability](https://api.codeclimate.com/v1/badges/fe983803eb7d71a87a34/maintainability)](https://codeclimate.com/github/keboola/php-file-storage-utils/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/fe983803eb7d71a87a34/test_coverage)](https://codeclimate.com/github/keboola/php-file-storage-utils/test_coverage)
+# File storage utils [![Build Status](https://dev.azure.com/keboola-dev/php-file-storage-utils/_apis/build/status/keboola.php-file-storage-utils?branchName=master)](https://dev.azure.com/keboola-dev/php-file-storage-utils/_build/latest?definitionId=12&branchName=master) [![Maintainability](https://api.codeclimate.com/v1/badges/fe983803eb7d71a87a34/maintainability)](https://codeclimate.com/github/keboola/php-file-storage-utils/maintainability) 
 
 PHP utils around Azure blob storage and Amazon S3
 
