@@ -57,3 +57,7 @@ Deploy the storage account
 	az group deployment create --resource-group $PHP_FS_UTILS_RG --template-file arm-template.json
 
 command will output `ABS_ACCOUNT_NAME`, `ABS_ACCOUNT_KEY` which has to be added to `.env` file
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
