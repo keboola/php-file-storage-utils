@@ -38,13 +38,9 @@ jobs:
       env:
         ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
         ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
-        # For Codeclimate:
-        GIT_COMMIT_SHA: $(Build.SourceVersion)
-        GIT_BRANCH: $(Build.SourceBranch)
-        CC_TEST_REPORTER_ID: $(CC_TEST_REPORTER_ID)
 
-    - task: PublishTestResults@2
-      displayName: 'Publish Test results'
-      inputs:
-        testResultsFormat: 'JUnit'
-        testResultsFiles: 'build/logs/*.xml'
+    - script: docker-compose run --rm tests81
+      displayName: 'Run Tests PHP 8.1'
+      env:
+        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
+        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)

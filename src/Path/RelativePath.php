@@ -126,6 +126,7 @@ class RelativePath implements RelativePathInterface
 
     public function getPathWithoutRoot(): string
     {
+        // phpcs:ignore
         return $this->path ?? '';
     }
 

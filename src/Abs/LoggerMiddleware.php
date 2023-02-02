@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Keboola\FileStorage\Abs;
 
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\RejectedPromise;
 use MicrosoftAzure\Storage\Common\Middlewares\MiddlewareBase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Promise\RejectedPromise;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class LoggerMiddleware extends MiddlewareBase
 {
@@ -71,7 +72,7 @@ class LoggerMiddleware extends MiddlewareBase
             $options
         ) {
             $reasonArr = [];
-            if ($reason instanceof \Throwable) {
+            if ($reason instanceof Throwable) {
                 $reasonArr = [
                     'message' => $reason->getMessage(),
                     'code' => $reason->getCode(),
