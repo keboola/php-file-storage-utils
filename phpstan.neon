@@ -8,4 +8,4 @@ parameters:
         - "#Trying to invoke mixed but it's not a callable#"
         - '#Property Keboola\\FileStorage\\Path\\RelativePath\:\:\$path \(string\) on left side of \?\? is not nullable\.#'
     scanFiles:
-      - tests/common/EchoLogger.php8
+      - tests/common/EchoLogger.php
