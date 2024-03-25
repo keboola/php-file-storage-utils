@@ -15,7 +15,7 @@ class GcsAbsolutePathTest extends TestCase
     {
         $relativePath = RelativePath::createFromRelativePath(
             new GcsProvider(),
-            '/bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz'
+            '/bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
         );
 
         $path = GcsAbsolutePath::createFromRelativePath($relativePath);
@@ -25,11 +25,11 @@ class GcsAbsolutePathTest extends TestCase
         self::assertEquals('permanent/8/snapshots/in/c-api-tests/languages', $relativePath->getPathWithoutRoot());
         self::assertEquals(
             'permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
-            $relativePath->getPathnameWithoutRoot()
+            $relativePath->getPathnameWithoutRoot(),
         );
         self::assertEquals(
             'bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
-            $relativePath->getPathname()
+            $relativePath->getPathname(),
         );
         self::assertEquals('bucket', $relativePath->getRoot());
         self::assertInstanceOf(GcsProvider::class, $relativePath->getProvider());
@@ -38,11 +38,11 @@ class GcsAbsolutePathTest extends TestCase
         self::assertInstanceOf(GcsProvider::class, $path->getProvider());
         self::assertEquals(
             'gs://bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
-            $path->getAbsoluteUrl(GcsAbsolutePath::PROTOCOL_GS)
+            $path->getAbsoluteUrl(GcsAbsolutePath::PROTOCOL_GS),
         );
         self::assertEquals(
             'gs://bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
-            $path->getAbsoluteUrl()
+            $path->getAbsoluteUrl(),
         );
     }
 }

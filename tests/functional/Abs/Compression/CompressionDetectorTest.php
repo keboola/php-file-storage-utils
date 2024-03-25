@@ -24,7 +24,7 @@ class CompressionDetectorTest extends ContainerFunctionalTestCase
         $file = $this->uploadFile(
             __DIR__ . '/stub/lf.txt.gz',
             true,
-            'lf.txt.something' // set name wo gz extension
+            'lf.txt.something', // set name wo gz extension
         );
         self::assertTrue($downloader->isGzip($file));
     }
@@ -35,7 +35,7 @@ class CompressionDetectorTest extends ContainerFunctionalTestCase
 
         $file = $this->uploadFile(
             __DIR__ . '/../../../unit/LineEnding/stub/lf.txt',
-            true // will save filename with gz extension
+            true, // will save filename with gz extension
         );
         self::assertFalse($downloader->isGzip($file));
     }

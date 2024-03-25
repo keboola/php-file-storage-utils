@@ -38,7 +38,7 @@ class LoggerMiddleware extends MiddlewareBase
     {
         return function (ResponseInterface $response) use (
             $request,
-            $options
+            $options,
         ) {
             $this->logger->debug(
                 sprintf('Request OK: %s', (string) $request->getUri()),
@@ -53,7 +53,7 @@ class LoggerMiddleware extends MiddlewareBase
                         'headers' => $request->getHeaders(),
                     ],
                     'options' => $options,
-                ]
+                ],
             );
             return $response;
         };
@@ -69,7 +69,7 @@ class LoggerMiddleware extends MiddlewareBase
     {
         return function ($reason) use (
             $request,
-            $options
+            $options,
         ) {
             $reasonArr = [];
             if ($reason instanceof Throwable) {
@@ -106,7 +106,7 @@ class LoggerMiddleware extends MiddlewareBase
                     ],
                     'reason' => $reasonArr,
                     'options' => $options,
-                ]
+                ],
             );
             return new RejectedPromise($reason);
         };

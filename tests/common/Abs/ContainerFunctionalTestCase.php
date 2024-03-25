@@ -42,7 +42,7 @@ class ContainerFunctionalTestCase extends BaseFunctionalTestCase
     protected function uploadString(
         string $stringToUpload,
         bool $gzip = false,
-        ?string $fileName = null
+        ?string $fileName = null,
     ): RelativePathInterface {
         if ($fileName === null) {
             $fileName = md5(uniqid('', true));
@@ -53,14 +53,14 @@ class ContainerFunctionalTestCase extends BaseFunctionalTestCase
         $this->client->createBlockBlob(
             $this->getContainerName(),
             $fileName,
-            $stringToUpload
+            $stringToUpload,
         );
 
         return RelativePath::create(
             new AbsProvider(),
             $this->getContainerName(),
             '',
-            $fileName
+            $fileName,
         );
     }
 }

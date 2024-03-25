@@ -15,6 +15,6 @@ interface LineEndingDetectorInterface
      */
     public function getLineEnding(
         RelativePathInterface $path,
-        int $bytes = self::BYTES_RANGE_END
+        int $bytes = self::BYTES_RANGE_END,
     ): string;
 }
