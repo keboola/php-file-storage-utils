@@ -42,7 +42,7 @@ final class PartialFileDownloader
             $result = $this->blobClient->getBlob(
                 $path->getRoot(),
                 $path->getPathnameWithoutRoot(),
-                $options
+                $options,
             );
         } catch (ServiceException $e) {
             if ($e->getCode() === self::ERR_CODE_BLOB_NOT_FOUND) {

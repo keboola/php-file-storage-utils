@@ -18,7 +18,7 @@ class PartialFileDownloaderTest extends ContainerFunctionalTestCase
 
         $this->expectException(FileNotFoundException::class);
         $downloader->downloadBytes(
-            RelativePath::create(new AbsProvider(), $this->getContainerName(), '', 'notexistingFile')
+            RelativePath::create(new AbsProvider(), $this->getContainerName(), '', 'notexistingFile'),
         );
     }
 
@@ -31,7 +31,7 @@ class PartialFileDownloaderTest extends ContainerFunctionalTestCase
 
         self::assertEquals(
             100,
-            strlen($result)
+            strlen($result),
         );
     }
 
@@ -39,14 +39,14 @@ class PartialFileDownloaderTest extends ContainerFunctionalTestCase
     {
         $downloader = $this->getDownloader();
         $file = $this->uploadString(
-            bin2hex(random_bytes(350000)) // create 700k bytes file
+            bin2hex(random_bytes(350000)), // create 700k bytes file
         );
 
         $result = $downloader->downloadBytes($file);
 
         self::assertEquals(
             655360,
-            strlen($result)
+            strlen($result),
         );
     }
 
@@ -54,14 +54,14 @@ class PartialFileDownloaderTest extends ContainerFunctionalTestCase
     {
         $downloader = $this->getDownloader();
         $file = $this->uploadString(
-            bin2hex(random_bytes(1000))
+            bin2hex(random_bytes(1000)),
         );
 
         $result = $downloader->downloadBytes($file, 100);
 
         self::assertEquals(
             100,
-            strlen($result)
+            strlen($result),
         );
     }
 

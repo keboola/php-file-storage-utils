@@ -31,7 +31,7 @@ class GcsAbsolutePath implements AbsolutePathInterface
         return sprintf(
             '%s://%s',
             $protocol,
-            $this->path->getPathname()
+            $this->path->getPathname(),
         );
     }
 

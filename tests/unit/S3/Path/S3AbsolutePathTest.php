@@ -15,7 +15,7 @@ class S3AbsolutePathTest extends TestCase
     {
         $relativePath = RelativePath::createFromRelativePath(
             new S3Provider(),
-            '/bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz'
+            '/bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
         );
 
         $path = S3AbsolutePath::createFromRelativePath($relativePath);
@@ -25,11 +25,11 @@ class S3AbsolutePathTest extends TestCase
         self::assertEquals('permanent/8/snapshots/in/c-api-tests/languages', $relativePath->getPathWithoutRoot());
         self::assertEquals(
             'permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
-            $relativePath->getPathnameWithoutRoot()
+            $relativePath->getPathnameWithoutRoot(),
         );
         self::assertEquals(
             'bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
-            $relativePath->getPathname()
+            $relativePath->getPathname(),
         );
         self::assertEquals('bucket', $relativePath->getRoot());
         self::assertInstanceOf(S3Provider::class, $relativePath->getProvider());
@@ -38,11 +38,11 @@ class S3AbsolutePathTest extends TestCase
         self::assertInstanceOf(S3Provider::class, $path->getProvider());
         self::assertEquals(
             's3://bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
-            $path->getAbsoluteUrl(S3AbsolutePath::PROTOCOL_S3)
+            $path->getAbsoluteUrl(S3AbsolutePath::PROTOCOL_S3),
         );
         self::assertEquals(
             's3://bucket/permanent/8/snapshots/in/c-api-tests/languages/2072.csv.gz',
-            $path->getAbsoluteUrl()
+            $path->getAbsoluteUrl(),
         );
     }
 }

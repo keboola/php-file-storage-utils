@@ -56,7 +56,7 @@ class LoggerMiddlewareTest extends TestCase
                     'headers' => $request->getHeaders(),
                 ],
                 'options' => [],
-            ]
+            ],
         );
 
         $middleware = new LoggerMiddleware($logMock);
@@ -88,7 +88,7 @@ class LoggerMiddlewareTest extends TestCase
                     'trace' => $reason->getTraceAsString(),
                 ],
                 'options' => [],
-            ]
+            ],
         );
 
         $middleware = new LoggerMiddleware($logMock);
@@ -123,7 +123,7 @@ class LoggerMiddlewareTest extends TestCase
                     'trace' => $reason->getTraceAsString(),
                 ],
                 'options' => [],
-            ]
+            ],
         );
 
         $middleware = new LoggerMiddleware($logMock);
@@ -153,7 +153,7 @@ class LoggerMiddlewareTest extends TestCase
                     'trace' => $reason->getTraceAsString(),
                 ],
                 'options' => [],
-            ]
+            ],
         );
 
         $middleware = new LoggerMiddleware($logMock);
