@@ -4,7 +4,7 @@ services:
   tests: &tests
     build:
       context: .
-      dockerfile: Dockerfile74
+      dockerfile: Dockerfile81
     environment:
       - ABS_ACCOUNT_NAME
       - ABS_ACCOUNT_KEY
@@ -18,31 +18,6 @@ services:
     <<: *tests
     volumes:
       - ./:/code
-
-  tests71:
-    <<: *tests
-    build:
-      context: .
-      dockerfile: Dockerfile71
-
-  tests72:
-    <<: *tests
-    build:
-      context: .
-      dockerfile: Dockerfile72
-
-  tests73:
-    <<: *tests
-    build:
-      context: .
-      dockerfile: Dockerfile73
-
-  tests74:
-    <<: *tests
-    build:
-      context: .
-      dockerfile: Dockerfile74
-
   tests81:
     <<: *tests
     build:
