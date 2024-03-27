@@ -35,7 +35,7 @@ final class CompressionDetector
         try {
             $result = $this->blobClient->getBlob(
                 $path->getRoot(),
-                $path->getPathnameWithoutRoot()
+                $path->getPathnameWithoutRoot(),
             );
         } catch (ServiceException $e) {
             if ($e->getCode() === self::ERR_CODE_BLOB_NOT_FOUND) {

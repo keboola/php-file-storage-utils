@@ -16,7 +16,7 @@ class ClientFactoryTest extends TestCase
     public function testCreateFromConnectionString(): void
     {
         $client = ClientFactory::createClientFromConnectionString(
-            'DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=ZHNhZGFzZGE=;EndpointSuffix=core.windows.net'
+            'DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=ZHNhZGFzZGE=;EndpointSuffix=core.windows.net',
         );
         $hasRetryMiddleware = false;
         $hasLoggerMiddleware = false;
@@ -36,7 +36,7 @@ class ClientFactoryTest extends TestCase
     {
         $client = ClientFactory::createClientFromConnectionString(
             'DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=ZHNhZGFzZGE=;EndpointSuffix=core.windows.net',
-            $this->getLogger()
+            $this->getLogger(),
         );
         $hasRetryMiddleware = false;
         $hasLoggerMiddleware = false;

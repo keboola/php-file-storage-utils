@@ -37,7 +37,7 @@ class RetryMiddlewareFactory
     public static function create(
         int $numberOfRetries = self::DEFAULT_NUMBER_OF_RETRIES,
         int $interval = self::DEFAULT_RETRY_INTERVAL,
-        string $accumulationMethod = self::EXPONENTIAL_INTERVAL_ACCUMULATION
+        string $accumulationMethod = self::EXPONENTIAL_INTERVAL_ACCUMULATION,
     ): RetryMiddleware {
         //Validate the input parameters
         //numberOfRetries
@@ -45,16 +45,16 @@ class RetryMiddlewareFactory
             $numberOfRetries > 0,
             sprintf(
                 Resources::INVALID_NEGATIVE_PARAM,
-                'numberOfRetries'
-            )
+                'numberOfRetries',
+            ),
         );
         //interval
         Validate::isTrue(
             $interval > 0,
             sprintf(
                 Resources::INVALID_NEGATIVE_PARAM,
-                'interval'
-            )
+                'interval',
+            ),
         );
         //accumulationMethod
         Validate::isTrue(
@@ -62,8 +62,8 @@ class RetryMiddlewareFactory
             $accumulationMethod === self::EXPONENTIAL_INTERVAL_ACCUMULATION,
             sprintf(
                 Resources::INVALID_PARAM_GENERAL,
-                'accumulationMethod'
-            )
+                'accumulationMethod',
+            ),
         );
 
         //Get the interval calculator according to the type of the
@@ -130,9 +130,9 @@ class RetryMiddlewareFactory
             $request,
             $response = null,
             $exception = null,
-            $isSecondary = false
+            $isSecondary = false,
         ) use (
-            $maxRetries
+            $maxRetries,
         ) {
             //Exceeds the retry limit. No retry.
             if ($retries >= $maxRetries) {
@@ -155,7 +155,7 @@ class RetryMiddlewareFactory
 
             return static::generalRetryDecider(
                 $response->getStatusCode(),
-                $isSecondary
+                $isSecondary,
             );
         };
     }
