@@ -10,37 +10,25 @@ jobs:
       displayName: 'Info'
 
     - script: |
-        docker-compose down
-        docker-compose build --pull
-        docker-compose pull
+        docker compose down
+        docker compose build --pull
+        docker compose pull
       displayName: 'Build Tests'
 
-    - script: docker-compose run --rm tests71
-      displayName: 'Run Tests PHP 7.1'
-      env:
-        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
-
-    - script: docker-compose run --rm tests72
-      displayName: 'Run Tests PHP 7.2'
-      env:
-        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
-
-    - script: docker-compose run --rm tests73
-      displayName: 'Run Tests PHP 7.3'
-      env:
-        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
-
-    - script: docker-compose run --rm tests74
-      displayName: 'Run Tests PHP 7.4'
-      env:
-        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
-        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
-
-    - script: docker-compose run --rm tests81
+    - script: docker compose run --rm tests81
       displayName: 'Run Tests PHP 8.1'
+      env:
+        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
+        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
+
+    - script: docker compose run --rm tests82
+      displayName: 'Run Tests PHP 8.2'
+      env:
+        ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
+        ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)
+
+    - script: docker compose run --rm tests83
+      displayName: 'Run Tests PHP 8.3'
       env:
         ABS_ACCOUNT_NAME: $(ABS_ACCOUNT_NAME)
         ABS_ACCOUNT_KEY: $(ABS_ACCOUNT_KEY)

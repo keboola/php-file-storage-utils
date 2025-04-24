@@ -38,7 +38,7 @@ class AbsAbsolutePath implements AbsolutePathInterface
             $protocol,
             $this->accountName,
             Resources::BLOB_BASE_DNS_NAME,
-            $this->path->getPathname()
+            $this->path->getPathname(),
         );
     }
 

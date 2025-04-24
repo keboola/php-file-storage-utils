@@ -1,10 +1,11 @@
 parameters:
     level: max
-    checkMissingIterableValueType: false
     paths:
         - src
         - tests
     ignoreErrors:
+        - identifier: missingType.iterableValue
+          reportUnmatched: false
         - "#Trying to invoke mixed but it's not a callable#"
         - '#Property Keboola\\FileStorage\\Path\\RelativePath\:\:\$path \(string\) on left side of \?\? is not nullable\.#'
     scanFiles:

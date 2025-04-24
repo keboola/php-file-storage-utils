@@ -10,13 +10,14 @@ use MicrosoftAzure\Storage\Common\Middlewares\RetryMiddleware;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
+use Stringable;
 
 class ClientFactoryTest extends TestCase
 {
     public function testCreateFromConnectionString(): void
     {
         $client = ClientFactory::createClientFromConnectionString(
-            'DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=ZHNhZGFzZGE=;EndpointSuffix=core.windows.net'
+            'DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=ZHNhZGFzZGE=;EndpointSuffix=core.windows.net',
         );
         $hasRetryMiddleware = false;
         $hasLoggerMiddleware = false;
@@ -36,7 +37,7 @@ class ClientFactoryTest extends TestCase
     {
         $client = ClientFactory::createClientFromConnectionString(
             'DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=ZHNhZGFzZGE=;EndpointSuffix=core.windows.net',
-            $this->getLogger()
+            $this->getLogger(),
         );
         $hasRetryMiddleware = false;
         $hasLoggerMiddleware = false;
@@ -56,7 +57,7 @@ class ClientFactoryTest extends TestCase
     {
         return new class extends AbstractLogger {
             // phpcs:disable
-            public function log($level, $message, array $context = []): void
+            public function log($level, string|Stringable $message, array $context = []): void
             {
             }
             // phpcs:enable

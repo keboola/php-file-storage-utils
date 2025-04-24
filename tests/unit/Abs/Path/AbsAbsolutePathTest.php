@@ -15,7 +15,7 @@ class AbsAbsolutePathTest extends TestCase
     {
         $relativePath = RelativePath::createFromRelativePath(
             new AbsProvider(),
-            'permanent-8-snapshots-in-c-api-tests-languages/2072.csv.gz'
+            'permanent-8-snapshots-in-c-api-tests-languages/2072.csv.gz',
         );
 
         $path = AbsAbsolutePath::createFromRelativePath($relativePath, 'kbcAccount');
@@ -33,11 +33,11 @@ class AbsAbsolutePathTest extends TestCase
         self::assertEquals('kbcAccount', $path->getAccountName());
         self::assertEquals(
             'azure://kbcAccount.blob.core.windows.net/permanent-8-snapshots-in-c-api-tests-languages/2072.csv.gz',
-            $path->getAbsoluteUrl(AbsAbsolutePath::PROTOCOL_AZURE)
+            $path->getAbsoluteUrl(AbsAbsolutePath::PROTOCOL_AZURE),
         );
         self::assertEquals(
             'https://kbcAccount.blob.core.windows.net/permanent-8-snapshots-in-c-api-tests-languages/2072.csv.gz',
-            $path->getAbsoluteUrl(AbsAbsolutePath::PROTOCOL_HTTPS)
+            $path->getAbsoluteUrl(AbsAbsolutePath::PROTOCOL_HTTPS),
         );
     }
 }

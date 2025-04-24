@@ -25,7 +25,7 @@ class RetryMiddlewareFactoryTest extends TestCase
         RetryMiddlewareFactory::create(
             -1,
             RetryMiddlewareFactory::DEFAULT_RETRY_INTERVAL,
-            RetryMiddlewareFactory::LINEAR_INTERVAL_ACCUMULATION
+            RetryMiddlewareFactory::LINEAR_INTERVAL_ACCUMULATION,
         );
     }
 
@@ -36,7 +36,7 @@ class RetryMiddlewareFactoryTest extends TestCase
         RetryMiddlewareFactory::create(
             RetryMiddlewareFactory::DEFAULT_NUMBER_OF_RETRIES,
             -1,
-            RetryMiddlewareFactory::LINEAR_INTERVAL_ACCUMULATION
+            RetryMiddlewareFactory::LINEAR_INTERVAL_ACCUMULATION,
         );
     }
 
@@ -47,7 +47,7 @@ class RetryMiddlewareFactoryTest extends TestCase
         RetryMiddlewareFactory::create(
             RetryMiddlewareFactory::DEFAULT_NUMBER_OF_RETRIES,
             RetryMiddlewareFactory::DEFAULT_RETRY_INTERVAL,
-            'string that does not make sense'
+            'string that does not make sense',
         );
     }
 
