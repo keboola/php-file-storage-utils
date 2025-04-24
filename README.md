@@ -38,9 +38,9 @@ Run tests with:
 
     docker compose run --rm testsXX
 
-where XX is PHP version (71 - 74), e.g.:
+where XX is PHP version (81 - 83), e.g.:
 
-    docker compose run --rm tests71
+    docker compose run --rm tests81
 
 ### Resources Setup
 
