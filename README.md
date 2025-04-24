@@ -36,11 +36,11 @@ use ClientFactory to preset client and middlewares
 
 Run tests with:
 
-    docker-compose run --rm testsXX
+    docker compose run --rm testsXX
 
 where XX is PHP version (71 - 74), e.g.:
 
-    docker-compose run --rm tests71
+    docker compose run --rm tests71
 
 ### Resources Setup
 
