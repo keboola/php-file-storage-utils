@@ -1,10 +1,7 @@
-version: "3"
 services:
   # for development purposes
   tests: &tests
-    build:
-      context: .
-      dockerfile: Dockerfile74
+    build: .
     environment:
       - ABS_ACCOUNT_NAME
       - ABS_ACCOUNT_KEY
@@ -19,32 +16,26 @@ services:
     volumes:
       - ./:/code
 
-  tests71:
-    <<: *tests
-    build:
-      context: .
-      dockerfile: Dockerfile71
-
-  tests72:
-    <<: *tests
-    build:
-      context: .
-      dockerfile: Dockerfile72
-
-  tests73:
-    <<: *tests
-    build:
-      context: .
-      dockerfile: Dockerfile73
-
-  tests74:
-    <<: *tests
-    build:
-      context: .
-      dockerfile: Dockerfile74
-
   tests81:
     <<: *tests
     build:
       context: .
-      dockerfile: Dockerfile81
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: 8.1
+
+  tests82:
+    <<: *tests
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: 8.2
+
+  tests83:
+    <<: *tests
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: 8.3
