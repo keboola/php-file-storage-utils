@@ -23,7 +23,7 @@ final class LineEndingDetector implements LineEndingDetectorInterface
     public static function createForClient(BlobRestProxy $blobClient): self
     {
         return new self(
-            new PartialFileDownloader($blobClient)
+            new PartialFileDownloader($blobClient),
         );
     }
 
@@ -32,7 +32,7 @@ final class LineEndingDetector implements LineEndingDetectorInterface
      */
     public function getLineEnding(
         RelativePathInterface $path,
-        int $bytes = LineEndingDetectorInterface::BYTES_RANGE_END
+        int $bytes = LineEndingDetectorInterface::BYTES_RANGE_END,
     ): string {
         $downloadResult = $this->downloader->downloadBytes($path, $bytes);
 

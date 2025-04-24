@@ -11,7 +11,7 @@ final class ClientFactory
 {
     public static function createClientFromConnectionString(
         string $connectionString,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
     ): BlobRestProxy {
         $client = BlobRestProxy::createBlobService($connectionString, [
             'http' => [

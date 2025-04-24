@@ -25,7 +25,7 @@ class BaseFunctionalTestCase extends TestCase
         $connectionString = sprintf(
             'DefaultEndpointsProtocol=https;AccountName=%s;AccountKey=%s',
             (string) getenv('ABS_ACCOUNT_NAME'),
-            (string) getenv('ABS_ACCOUNT_KEY')
+            (string) getenv('ABS_ACCOUNT_KEY'),
         );
 
         return ClientFactory::createClientFromConnectionString($connectionString, new EchoLogger());
