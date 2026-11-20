@@ -23,6 +23,8 @@ final class ClientFactory
         if ($logger !== null) {
             $client->pushMiddleware(new LoggerMiddleware($logger));
         }
+        // Pushed last, so it sits closest to Guzzle and the retry and logger see the redacted failure.
+        $client->pushMiddleware(new QueryRedactionMiddleware());
 
         return $client;
     }
