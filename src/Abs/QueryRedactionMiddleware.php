@@ -7,8 +7,8 @@ namespace Keboola\FileStorage\Abs;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Promise\RejectedPromise;
 use GuzzleHttp\Psr7\Query;
 use Psr\Http\Message\RequestInterface;
 use Throwable;
@@ -31,7 +31,7 @@ final class QueryRedactionMiddleware
         return static fn (RequestInterface $request, array $options): PromiseInterface
             => $handler($request, $options)->then(
                 null,
-                static fn (mixed $reason): PromiseInterface => Create::rejectionFor(
+                static fn (mixed $reason): PromiseInterface => new RejectedPromise(
                     $reason instanceof Throwable ? self::redact($reason, $request) : $reason,
                 ),
             );
