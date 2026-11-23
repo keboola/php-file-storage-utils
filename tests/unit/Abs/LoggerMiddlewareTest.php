@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\FileStorage\Abs;
 
 use Exception;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -202,5 +203,57 @@ class LoggerMiddlewareTest extends TestCase
         $logged = (string) json_encode($records);
         self::assertStringNotContainsString('SECRET', $logged);
         self::assertStringNotContainsString('sig=', $logged);
+    }
+
+    /**
+     * @dataProvider provideReasonsNamingTheSignedUri
+     */
+    public function testSasIsNotLoggedInTheRejectReason(callable $createReason, string $expectedMessage): void
+    {
+        $request = new Request(
+            'PUT',
+            'https://account.blob.core.windows.net/container/blob?sv=2020-01-01&sig=SECRET%2Bsig',
+        );
+        $records = [];
+
+        /** @var LoggerInterface|MockObject $logMock */
+        $logMock = $this->createMock(LoggerInterface::class);
+        $logMock->expects($this->once())->method('info')->willReturnCallback(
+            static function (string $message, array $context = []) use (&$records): void {
+                $records[] = [$message, $context];
+            },
+        );
+
+        $middleware = new LoggerMiddleware($logMock);
+        self::getMethod('onRejected', $middleware)->invokeArgs($middleware, [$request, []])($createReason($request));
+
+        self::assertSame($expectedMessage, $records[0][1]['reason']['message']);
+        $logged = (string) json_encode($records);
+        self::assertStringNotContainsString('SECRET', $logged);
+        self::assertStringNotContainsString('sig=', $logged);
+    }
+
+    /**
+     * @return iterable<string, array{callable, string}>
+     */
+    public static function provideReasonsNamingTheSignedUri(): iterable
+    {
+        $url = 'https://account.blob.core.windows.net/container/blob';
+
+        yield 'HTTP error built by Guzzle' => [
+            static fn (Request $request) => RequestException::create($request, new Response(403)),
+            'Client error: `PUT ' . $url . '` resulted in a `403 Forbidden` response',
+        ];
+        yield 'connection error naming the URL' => [
+            static fn (Request $request) => new ConnectException(
+                'cURL error 7: Failed to connect for ' . $request->getUri(),
+                $request,
+            ),
+            'cURL error 7: Failed to connect for ' . $url,
+        ];
+        yield 'plain exception naming the URL' => [
+            static fn (Request $request) => new Exception('Failed: ' . $request->getUri()),
+            'Failed: ' . $url,
+        ];
     }
 }

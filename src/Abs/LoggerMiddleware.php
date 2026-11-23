@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Abs;
 
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\RejectedPromise;
 use MicrosoftAzure\Storage\Common\Middlewares\MiddlewareBase;
@@ -78,7 +79,7 @@ class LoggerMiddleware extends MiddlewareBase
             $reasonArr = [];
             if ($reason instanceof Throwable) {
                 $reasonArr = [
-                    'message' => $reason->getMessage(),
+                    'message' => self::message($reason, $request),
                     'code' => $reason->getCode(),
                     'trace' => $reason->getTraceAsString(),
                 ];
@@ -94,7 +95,7 @@ class LoggerMiddleware extends MiddlewareBase
                 }
 
                 $reasonArr = [
-                    'message' => $reason->getMessage(),
+                    'message' => self::message($reason, $request),
                     'response' => $response,
                     'code' => $reason->getCode(),
                     'trace' => $reason->getTraceAsString(),
@@ -120,6 +121,17 @@ class LoggerMiddleware extends MiddlewareBase
     private static function uri(RequestInterface $request): string
     {
         return (string) $request->getUri()->withQuery('');
+    }
+
+    // Guzzle and curl build the failure message from the full request URI.
+    private static function message(Throwable $reason, RequestInterface $request): string
+    {
+        $secrets = QueryRedactionMiddleware::secrets($request);
+        if ($reason instanceof RequestException || $reason instanceof ConnectException) {
+            $secrets = array_merge($secrets, QueryRedactionMiddleware::secrets($reason->getRequest()));
+        }
+
+        return str_replace($secrets, '', $reason->getMessage());
     }
 
     /**

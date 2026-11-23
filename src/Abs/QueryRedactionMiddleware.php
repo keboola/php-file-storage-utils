@@ -81,7 +81,7 @@ final class QueryRedactionMiddleware
     /**
      * @return list<string>
      */
-    private static function secrets(RequestInterface $request): array
+    public static function secrets(RequestInterface $request): array
     {
         $query = $request->getUri()->getQuery();
         if ($query === '') {
