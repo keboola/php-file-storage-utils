@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\FileStorage\Abs;
 
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\RejectedPromise;
 use MicrosoftAzure\Storage\Common\Middlewares\MiddlewareBase;
@@ -14,6 +15,10 @@ use Throwable;
 
 class LoggerMiddleware extends MiddlewareBase
 {
+    private const REDACTED_HEADERS = ['authorization'];
+
+    private const REDACTED_VALUE = '***';
+
     /** @var LoggerInterface */
     private $logger;
 
@@ -24,7 +29,7 @@ class LoggerMiddleware extends MiddlewareBase
 
     protected function onRequest(RequestInterface $request): RequestInterface
     {
-        $this->logger->debug(sprintf('Request: %s', (string) $request->getUri()));
+        $this->logger->debug(sprintf('Request: %s', self::uri($request)));
         return $request;
     }
 
@@ -41,16 +46,16 @@ class LoggerMiddleware extends MiddlewareBase
             $options,
         ) {
             $this->logger->debug(
-                sprintf('Request OK: %s', (string) $request->getUri()),
+                sprintf('Request OK: %s', self::uri($request)),
                 [
                     'request' => [
                         'method' => $request->getMethod(),
                         'body' => (string) $request->getBody(),
-                        'headers' => $request->getHeaders(),
+                        'headers' => self::headers($request),
                     ],
                     'response' => [
                         'body' => (string) $request->getBody(),
-                        'headers' => $request->getHeaders(),
+                        'headers' => self::headers($request),
                     ],
                     'options' => $options,
                 ],
@@ -74,7 +79,7 @@ class LoggerMiddleware extends MiddlewareBase
             $reasonArr = [];
             if ($reason instanceof Throwable) {
                 $reasonArr = [
-                    'message' => $reason->getMessage(),
+                    'message' => self::message($reason, $request),
                     'code' => $reason->getCode(),
                     'trace' => $reason->getTraceAsString(),
                 ];
@@ -90,19 +95,19 @@ class LoggerMiddleware extends MiddlewareBase
                 }
 
                 $reasonArr = [
-                    'message' => $reason->getMessage(),
+                    'message' => self::message($reason, $request),
                     'response' => $response,
                     'code' => $reason->getCode(),
                     'trace' => $reason->getTraceAsString(),
                 ];
             }
             $this->logger->info(
-                sprintf('Request REJECT: %s', (string) $request->getUri()),
+                sprintf('Request REJECT: %s', self::uri($request)),
                 [
                     'request' => [
                         'method' => $request->getMethod(),
                         'body' => (string) $request->getBody(),
-                        'headers' => $request->getHeaders(),
+                        'headers' => self::headers($request),
                     ],
                     'reason' => $reasonArr,
                     'options' => $options,
@@ -110,5 +115,37 @@ class LoggerMiddleware extends MiddlewareBase
             );
             return new RejectedPromise($reason);
         };
+    }
+
+    // The query string carries the whole SAS, so it never reaches the log.
+    private static function uri(RequestInterface $request): string
+    {
+        return (string) $request->getUri()->withQuery('');
+    }
+
+    // Guzzle and curl build the failure message from the full request URI.
+    private static function message(Throwable $reason, RequestInterface $request): string
+    {
+        $secrets = QueryRedactionMiddleware::secrets($request);
+        if ($reason instanceof RequestException || $reason instanceof ConnectException) {
+            $secrets = array_merge($secrets, QueryRedactionMiddleware::secrets($reason->getRequest()));
+        }
+
+        return str_replace($secrets, '', $reason->getMessage());
+    }
+
+    /**
+     * @return array<string[]>
+     */
+    private static function headers(RequestInterface $request): array
+    {
+        $headers = $request->getHeaders();
+        foreach ($headers as $name => $values) {
+            if (in_array(strtolower((string) $name), self::REDACTED_HEADERS, true)) {
+                $headers[$name] = [self::REDACTED_VALUE];
+            }
+        }
+
+        return $headers;
     }
 }
