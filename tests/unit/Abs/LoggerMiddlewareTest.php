@@ -161,4 +161,46 @@ class LoggerMiddlewareTest extends TestCase
         $callable = $onRejected->invokeArgs($middleware, [$request, []]);
         $callable($reason);
     }
+
+    public function testSasAndAuthorizationHeaderAreNotLogged(): void
+    {
+        $request = new Request(
+            'PUT',
+            'https://account.blob.core.windows.net/container/blob?sv=2020-01-01&sig=SECRET%2Bsig',
+            ['Authorization' => 'SharedKey account:SECRETHMAC', 'x-ms-version' => '2020-01-01'],
+        );
+        $expectedHeaders = [
+            'Host' => ['account.blob.core.windows.net'],
+            'Authorization' => ['***'],
+            'x-ms-version' => ['2020-01-01'],
+        ];
+        $records = [];
+        $collect = static function (string $message, array $context = []) use (&$records): void {
+            $records[] = [$message, $context];
+        };
+
+        /** @var LoggerInterface|MockObject $logMock */
+        $logMock = $this->createMock(LoggerInterface::class);
+        $logMock->expects($this->exactly(2))->method('debug')->willReturnCallback($collect);
+        $logMock->expects($this->once())->method('info')->willReturnCallback($collect);
+
+        $middleware = new LoggerMiddleware($logMock);
+        self::getMethod('onRequest', $middleware)->invokeArgs($middleware, [$request]);
+        self::getMethod('onFulfilled', $middleware)->invokeArgs($middleware, [$request, []])(new Response());
+        self::getMethod('onRejected', $middleware)->invokeArgs($middleware, [$request, []])(
+            new Exception('test message'),
+        );
+
+        $url = 'https://account.blob.core.windows.net/container/blob';
+        self::assertSame('Request: ' . $url, $records[0][0]);
+        self::assertSame('Request OK: ' . $url, $records[1][0]);
+        self::assertSame('Request REJECT: ' . $url, $records[2][0]);
+        self::assertSame($expectedHeaders, $records[1][1]['request']['headers']);
+        self::assertSame($expectedHeaders, $records[1][1]['response']['headers']);
+        self::assertSame($expectedHeaders, $records[2][1]['request']['headers']);
+
+        $logged = (string) json_encode($records);
+        self::assertStringNotContainsString('SECRET', $logged);
+        self::assertStringNotContainsString('sig=', $logged);
+    }
 }

@@ -14,6 +14,10 @@ use Throwable;
 
 class LoggerMiddleware extends MiddlewareBase
 {
+    private const REDACTED_HEADERS = ['authorization'];
+
+    private const REDACTED_VALUE = '***';
+
     /** @var LoggerInterface */
     private $logger;
 
@@ -24,7 +28,7 @@ class LoggerMiddleware extends MiddlewareBase
 
     protected function onRequest(RequestInterface $request): RequestInterface
     {
-        $this->logger->debug(sprintf('Request: %s', (string) $request->getUri()));
+        $this->logger->debug(sprintf('Request: %s', self::uri($request)));
         return $request;
     }
 
@@ -41,16 +45,16 @@ class LoggerMiddleware extends MiddlewareBase
             $options,
         ) {
             $this->logger->debug(
-                sprintf('Request OK: %s', (string) $request->getUri()),
+                sprintf('Request OK: %s', self::uri($request)),
                 [
                     'request' => [
                         'method' => $request->getMethod(),
                         'body' => (string) $request->getBody(),
-                        'headers' => $request->getHeaders(),
+                        'headers' => self::headers($request),
                     ],
                     'response' => [
                         'body' => (string) $request->getBody(),
-                        'headers' => $request->getHeaders(),
+                        'headers' => self::headers($request),
                     ],
                     'options' => $options,
                 ],
@@ -97,12 +101,12 @@ class LoggerMiddleware extends MiddlewareBase
                 ];
             }
             $this->logger->info(
-                sprintf('Request REJECT: %s', (string) $request->getUri()),
+                sprintf('Request REJECT: %s', self::uri($request)),
                 [
                     'request' => [
                         'method' => $request->getMethod(),
                         'body' => (string) $request->getBody(),
-                        'headers' => $request->getHeaders(),
+                        'headers' => self::headers($request),
                     ],
                     'reason' => $reasonArr,
                     'options' => $options,
@@ -110,5 +114,26 @@ class LoggerMiddleware extends MiddlewareBase
             );
             return new RejectedPromise($reason);
         };
+    }
+
+    // The query string carries the whole SAS, so it never reaches the log.
+    private static function uri(RequestInterface $request): string
+    {
+        return (string) $request->getUri()->withQuery('');
+    }
+
+    /**
+     * @return array<string[]>
+     */
+    private static function headers(RequestInterface $request): array
+    {
+        $headers = $request->getHeaders();
+        foreach ($headers as $name => $values) {
+            if (in_array(strtolower((string) $name), self::REDACTED_HEADERS, true)) {
+                $headers[$name] = [self::REDACTED_VALUE];
+            }
+        }
+
+        return $headers;
     }
 }
